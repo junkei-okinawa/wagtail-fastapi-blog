@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h1>{{ page.title }}</h1>
+        
+        {% if page.intro %}
+            <div class="lead mb-4">
+                {{ page.intro|richtext }}
+            </div>
+        {% endif %}
+
+        <div class="row" id="blog-posts">
+            <!-- 最適化された子ページの表示 -->
+            {% for child in blog_pages %}
+                <div class="col-md-6 mb-4">
+                    <article class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% pageurl child %}" class="text-decoration-none">{{ child.title }}</a>
+                            </h5>
+                            {% if child.intro %}
+                                <p class="card-text">{{ child.intro }}</p>
+                            {% endif %}
+                            {% if child.date %}
+                                <small class="text-muted">
+                                    <time datetime="{{ child.date|date:'c' }}">{{ child.date }}</time>
+                                </small>
+                            {% endif %}
+                        </div>
+                    </article>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        <h4 class="alert-heading">ブログ記事がありません</h4>
+                        <p>まだブログ記事が投稿されていません。Wagtail管理画面から記事を追加してください。</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- ローディング表示とページネーション用のコンテナ -->
+        <div id="loading-indicator" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">記事を読み込み中...</p>
+        </div>
+        
+        <!-- ページネーション -->
+        <nav aria-label="ブログ記事のページネーション" class="mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">
+                        最新 {{ blog_pages|length }} 件の記事を表示
+                    </small>
+                </div>
+                <div>
+                    <button id="load-more-btn" class="btn btn-outline-primary" onclick="loadMorePosts()">
+                        さらに読む
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <div class="col-lg-4">
+        <aside>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> About</h5>
+                </div>
+                <div class="card-body">
+                    <p>Welcome to our blog! This is a demo site built with Django, Wagtail, and FastAPI.</p>
+                    <p>パフォーマンス最適化機能:</p>
+                    <ul class="small">
+                        <li>データベースクエリ最適化</li>
+                        <li>キャッシュ機能</li>
+                        <li>ページネーション</li>
+                        <li>非同期処理</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- APIパフォーマンス表示 -->
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-chart-line"></i> API Performance</h6>
+                </div>
+                <div class="card-body">
+                    <div id="api-stats">
+                        <div class="text-center">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- JavaScript for performance optimization -->
+<script>
+let currentPage = 1;
+let totalPages = 1;
+let isLoading = false;
+
+// ページ読み込み時にAPIの統計情報を取得
+document.addEventListener('DOMContentLoaded', function() {
+    loadApiStats();
+});
+
+async function loadApiStats() {
+    try {
+        const response = await fetch('/api/posts/stats');
+        const data = await response.json();
+        
+        const statsHtml = `
+            <div class="row text-center">
+                <div class="col-6">
+                    <div class="h6 mb-0">${data.cache.hit_rate.toFixed(2)}</div>
+                    <small class="text-muted">キャッシュ率</small>
+                </div>
+                <div class="col-6">
+                    <div class="h6 mb-0">${data.cache.current_size}</div>
+                    <small class="text-muted">キャッシュ数</small>
+                </div>
+            </div>
+            <div class="mt-2">
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: ${data.cache.hit_rate * 100}%" 
+                         aria-valuenow="${data.cache.hit_rate * 100}" 
+                         aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('api-stats').innerHTML = statsHtml;
+    } catch (error) {
+        console.error('Failed to load API stats:', error);
+        document.getElementById('api-stats').innerHTML = 
+            '<small class="text-muted">統計情報の取得に失敗しました</small>';
+    }
+}
+
+async function loadMorePosts() {
+    if (isLoading) return;
+    
+    isLoading = true;
+    const loadBtn = document.getElementById('load-more-btn');
+    const loading = document.getElementById('loading-indicator');
+    
+    // UI更新
+    loadBtn.disabled = true;
+    loadBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> 読み込み中...';
+    loading.style.display = 'block';
+    
+    try {
+        currentPage++;
+        const response = await fetch(`/api/posts/?page=${currentPage}&limit=10`);
+        const data = await response.json();
+        
+        if (data.posts && data.posts.length > 0) {
+            const blogPostsContainer = document.getElementById('blog-posts');
+            
+            data.posts.forEach(post => {
+                const postHtml = `
+                    <div class="col-md-6 mb-4">
+                        <article class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="${post.url_path}" class="text-decoration-none">${post.title}</a>
+                                </h5>
+                                <p class="card-text">${post.intro}</p>
+                                <small class="text-muted">
+                                    <time datetime="${post.date}">${new Date(post.date).toLocaleDateString('ja-JP')}</time>
+                                </small>
+                            </div>
+                        </article>
+                    </div>
+                `;
+                blogPostsContainer.insertAdjacentHTML('beforeend', postHtml);
+            });
+            
+            // ページネーション情報を更新
+            totalPages = data.pagination.total_pages;
+            if (currentPage >= totalPages) {
+                loadBtn.style.display = 'none';
+            }
+        }
+        
+        // APIの統計情報を更新
+        await loadApiStats();
+        
+    } catch (error) {
+        console.error('Failed to load more posts:', error);
+        currentPage--; // エラー時はページ番号を戻す
+    } finally {
+        isLoading = false;
+        loadBtn.disabled = false;
+        loadBtn.innerHTML = 'さらに読む';
+        loading.style.display = 'none';
+    }
+}
+
+// パフォーマンス監視
+if ('performance' in window) {
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const perfData = performance.getEntriesByType('navigation')[0];
+            console.log('Page Load Performance:', {
+                'DNS': perfData.domainLookupEnd - perfData.domainLookupStart,
+                'Connection': perfData.connectEnd - perfData.connectStart,
+                'Response': perfData.responseEnd - perfData.responseStart,
+                'DOM Content Loaded': perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+                'Total Load Time': perfData.loadEventEnd - perfData.navigationStart
+            });
+        }, 0);
+    });
+}
+</script>
+{% endblock %}

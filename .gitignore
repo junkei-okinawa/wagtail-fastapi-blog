@@ -1,0 +1,205 @@
+# ===========================
+# Python関連
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ===========================
+# 仮想環境
+# ===========================
+.venv/
+venv/
+ENV/
+env/
+.env/
+
+# ===========================
+# Django関連
+# ===========================
+# データベースファイル
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3*
+
+# 静的ファイル (collectstaticで生成)
+/staticfiles/
+/static/
+/django_project/staticfiles/
+/django_project/django_project/staticfiles/
+/django_project/static/admin/
+/django_project/static/wagtail*/
+
+# メディアファイル
+/media/
+/django_project/media/
+
+# ログファイル
+*.log
+/logs/
+/django_project/logs/
+
+# Django設定ファイル (ローカル設定)
+local_settings.py
+/django_project/*/settings/local.py
+
+# ===========================
+# 環境変数・機密情報
+# ===========================
+.env
+.env.local
+.env.*.local
+*.env
+
+# Stripe関連
+stripe_*.json
+
+# ===========================
+# IDE・エディタ関連
+# ===========================
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================
+# OS関連
+# ===========================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+
+# ===========================
+# テスト・カバレッジ
+# ===========================
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+htmlcov/
+.cache
+nosetests.xml
+
+# ===========================
+# ドキュメント
+# ===========================
+docs/_build/
+.readthedocs.yml
+
+# ===========================
+# バックアップ・一時ファイル
+# ===========================
+*.bak
+*.tmp
+*.temp
+*~
+
+# ===========================
+# Node.js関連 (フロントエンド用)
+# ===========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+
+# ===========================
+# 開発用ファイル
+# ===========================
+# テスト用画像・ファイル
+test_images/
+sample_data/
+dummy_data/
+
+# デバッグ用ファイル
+debug.py
+test.py
+hello.py
+
+# 最適化関連の重複ファイル
+*_optimized.py
+
+# ===========================
+# プロジェクト固有
+# ===========================
+# Wagtail検索インデックス
+whoosh_index/
+
+# セッションファイル
+django_session
+
+# キャッシュファイル
+.cache/
+*.cache

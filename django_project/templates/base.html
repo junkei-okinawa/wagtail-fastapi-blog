@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
+    <title>{% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %} - totonoe_template</title>
+    <meta name="description" content="{% block meta_description %}{% if page.search_description %}{{ page.search_description }}{% endif %}{% endblock %}">
+    
+    <!-- PWA meta tags -->
+    <meta name="theme-color" content="#343a40">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Performance hints -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    
+    <!-- Critical CSS inline -->
+    <style>
+        /* Critical above-the-fold styles */
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .navbar { background-color: #343a40; }
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 15px; }
+        .my-5 { margin-top: 3rem; margin-bottom: 3rem; }
+    </style>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+    
+    <!-- Custom performance CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/performance.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Performance monitoring -->
+    <script>
+        // Mark navigation start
+        window.performance.mark('navigation-start');
+        
+        // Simple error tracking
+        window.addEventListener('error', function(e) {
+            console.error('JS Error:', e.error);
+        });
+    </script>
+</head>
+<body>
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">メインコンテンツへスキップ</a>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-blog"></i> totonoe_template
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="ナビゲーション切り替え">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" aria-label="ホーム">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/sample-index-page/" aria-label="ブログ記事一覧">
+                            <i class="fas fa-newspaper"></i> ブログ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" aria-label="管理画面">
+                            <i class="fas fa-cog"></i> Admin
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/posts/" aria-label="API">
+                            <i class="fas fa-code"></i> API
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" class="container my-5" role="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-dark text-light py-4 mt-5" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; 2025 totonoe_template. All rights reserved.</p>
+                    <p class="small">
+                        <i class="fas fa-rocket"></i> 
+                        Django + Wagtail + FastAPI でパフォーマンス最適化
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>Powered by <strong>Django & Wagtail</strong></p>
+                    <div class="small">
+                        <a href="/api/posts/health" class="text-light text-decoration-none" target="_blank">
+                            <i class="fas fa-heartbeat"></i> API Health
+                        </a>
+                        <span class="mx-2">|</span>
+                        <a href="/api/posts/stats" class="text-light text-decoration-none" target="_blank">
+                            <i class="fas fa-chart-bar"></i> Performance Stats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Performance badge -->
+    <div id="performance-badge" class="performance-badge" style="display: none;">
+        <i class="fas fa-tachometer-alt"></i>
+        <span id="performance-text">--ms</span>
+    </div>
+    <!-- Bootstrap JS (defer for better performance) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    
+    <!-- Performance monitoring script -->
+    <script>
+        // Page load performance monitoring
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if ('performance' in window) {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+                    
+                    // Update performance badge
+                    const badge = document.getElementById('performance-badge');
+                    const text = document.getElementById('performance-text');
+                    
+                    if (badge && text) {
+                        text.textContent = Math.round(loadTime) + 'ms';
+                        
+                        // Color coding based on load time
+                        if (loadTime < 1000) {
+                            badge.className = 'performance-badge good';
+                        } else if (loadTime < 3000) {
+                            badge.className = 'performance-badge warning';
+                        } else {
+                            badge.className = 'performance-badge poor';
+                        }
+                        
+                        badge.style.display = 'block';
+                        
+                        // Hide after 5 seconds
+                        setTimeout(function() {
+                            badge.style.display = 'none';
+                        }, 5000);
+                    }
+                    
+                    // Log detailed performance metrics
+                    console.log('Page Performance:', {
+                        'Total Load Time': Math.round(loadTime) + 'ms',
+                        'DOM Content Loaded': Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart) + 'ms',
+                        'Time to First Byte': Math.round(perfData.responseStart - perfData.requestStart) + 'ms',
+                        'DNS Lookup': Math.round(perfData.domainLookupEnd - perfData.domainLookupStart) + 'ms',
+                        'Connection Time': Math.round(perfData.connectEnd - perfData.connectStart) + 'ms'
+                    });
+                }
+            }, 0);
+        });
+        
+        // Service Worker registration for caching (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Register service worker for offline capabilities (if implemented)
+                // navigator.serviceWorker.register('/static/js/sw.js');
+            });
+        }
+        
+        // Intersection Observer for lazy loading (if needed)
+        if ('IntersectionObserver' in window) {
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            const imageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy-load');
+                        img.classList.add('loaded');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+            
+            lazyImages.forEach(function(img) {
+                imageObserver.observe(img);
+            });
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

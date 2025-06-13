@@ -1,0 +1,156 @@
+/* CSS最適化とパフォーマンス向上 */
+
+/* 基本的なパフォーマンス最適化 */
+* {
+    box-sizing: border-box;
+}
+
+/* レイジーローディング対応 */
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+/* ローディングアニメーション */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* パフォーマンス向上のためのCSS最適化 */
+.card {
+    transform: translateZ(0); /* GPU加速 */
+    will-change: transform;
+}
+
+.card:hover {
+    transform: translateY(-2px) translateZ(0);
+    transition: transform 0.2s ease-out;
+}
+
+/* スムーズスクロール */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Critical CSS - Above the fold content */
+.navbar, .navbar-brand {
+    contain: layout style;
+}
+
+/* 非同期読み込み用のスタイル */
+.async-content {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Performance indicators */
+.performance-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.performance-badge.good {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.performance-badge.warning {
+    background: rgba(255, 193, 7, 0.9);
+}
+
+.performance-badge.poor {
+    background: rgba(220, 53, 69, 0.9);
+}
+
+/* モバイル最適化 */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .performance-badge {
+        display: none; /* モバイルでは非表示 */
+    }
+}
+
+/* プリント用CSS */
+@media print {
+    .performance-badge,
+    .btn,
+    .navbar {
+        display: none !important;
+    }
+}
+
+/* レスポンシブイメージ */
+img {
+    max-width: 100%;
+    height: auto;
+    /* loading: lazy; はHTMLの属性で、CSSではありません */
+}
+
+/* フォーカス管理 */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 1001;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid;
+    }
+    
+    .btn {
+        border: 2px solid;
+    }
+}

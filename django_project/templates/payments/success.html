@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}決済完了 - totonoe_template{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="card-title text-success">決済が完了しました！</h2>
+                <p class="card-text lead">
+                    ご購入ありがとうございます。記事へのアクセスが有効になりました。
+                </p>
+                
+                <div class="alert alert-info">
+                    <h5>セッション情報</h5>
+                    <p class="mb-0">
+                        <strong>セッションID:</strong> 
+                        <span id="session-id">{{ request.GET.session_id|default:"不明" }}</span>
+                    </p>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="/" class="btn btn-primary me-2">ホームに戻る</a>
+                    <a href="/sample-index-page/" class="btn btn-outline-secondary">ブログ一覧</a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="text-muted">
+                    <h6>次のステップ</h6>
+                    <ul class="list-unstyled">
+                        <li>✓ 購入記録がデータベースに保存されました</li>
+                        <li>✓ 確認メールを送信しました（実装予定）</li>
+                        <li>✓ 記事への特別アクセス権限が付与されました（実装予定）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // URL パラメータからセッションIDを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+        document.getElementById('session-id').textContent = sessionId;
+        
+        // TODO: セッションIDを使って購入詳細を取得・表示
+        // TODO: 購入完了の処理をバックエンドに通知
+    }
+});
+</script>
+{% endblock %}
