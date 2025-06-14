@@ -6,7 +6,13 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 # Django 設定を先に初期化
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.dev")
+# テスト環境の場合はデフォルトでtest設定を使用
+if 'DJANGO_SETTINGS_MODULE' not in os.environ:
+    if 'pytest' in os.environ.get('_', '') or 'PYTEST_CURRENT_TEST' in os.environ:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.test")
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.dev")
+
 django.setup()
 
 # Django ASGI アプリケーションを取得

@@ -15,11 +15,12 @@ app = FastAPI(
     redoc_url="/redoc" if os.getenv("DEBUG", "False").lower() == "true" else None,  # 本番環境では無効化
 )
 
-# セキュリティミドルウェア: 信頼できるホストのみ許可
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"]  # 本番ドメインを追加
-)
+# セキュリティミドルウェア: 信頼できるホストのみ許可（テスト環境以外）
+if not os.getenv("TESTING", "False").lower() == "true":
+    app.add_middleware(
+        TrustedHostMiddleware, 
+        allowed_hosts=["localhost", "127.0.0.1", "*.yourdomain.com"]  # 本番ドメインを追加
+    )
 
 # CORS設定（より厳密に）
 allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",")
