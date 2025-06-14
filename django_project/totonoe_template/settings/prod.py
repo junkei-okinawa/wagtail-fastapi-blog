@@ -51,10 +51,10 @@ DATABASES = {
 
 # Static files（本番環境）
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'django_project' / 'staticfiles'  # 開発環境と統一
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'django_project' / 'media'  # 開発環境と統一
 
 # Wagtail settings（本番環境）
 WAGTAILADMIN_BASE_URL = os.getenv('WAGTAILADMIN_BASE_URL', 'https://yourdomain.com')

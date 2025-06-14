@@ -45,7 +45,6 @@ db.sqlite3*
 /staticfiles/
 /static/
 /django_project/staticfiles/
-/django_project/django_project/staticfiles/
 /django_project/static/admin/
 /django_project/static/wagtail*/
 
