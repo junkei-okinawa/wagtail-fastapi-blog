@@ -1,6 +1,7 @@
 """Unit tests for blog models."""
 
 import pytest
+from datetime import date
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site
@@ -26,7 +27,8 @@ class TestBlogModels(TestCase):
             title="Test Blog Post",
             intro="This is a test intro",
             body=RichText("<p>This is test content</p>"),
-            slug="test-blog-post"
+            slug="test-blog-post",
+            date=date.today()  # Add required date field
         )
         
         # Add to root page
@@ -37,6 +39,7 @@ class TestBlogModels(TestCase):
         self.assertEqual(blog_page.title, "Test Blog Post")
         self.assertEqual(blog_page.intro, "This is a test intro")
         self.assertEqual(blog_page.slug, "test-blog-post")
+        self.assertEqual(blog_page.date, date.today())
         
     def test_blog_page_str_method(self):
         """Test BlogPage string representation."""
@@ -48,7 +51,8 @@ class TestBlogModels(TestCase):
         blog_page = BlogPage(
             title="Test Blog Post",
             intro="Test intro",
-            body=RichText("<p>Test content</p>")
+            body=RichText("<p>Test content</p>"),
+            date=date.today()  # Add required date field
         )
         self.root_page.add_child(instance=blog_page)
         blog_page.save()
@@ -67,6 +71,8 @@ class TestBlogModels(TestCase):
         """Test BlogPage live and public methods."""
         blog_page = BlogPage(
             title="Test Blog Post",
+            intro="Test intro for live page",  # Add required intro field
+            date=date.today(),  # Add required date field
             live=True
         )
         self.root_page.add_child(instance=blog_page)

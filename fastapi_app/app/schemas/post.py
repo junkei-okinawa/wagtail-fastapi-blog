@@ -1,31 +1,82 @@
-from datetime import date
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
 class PostBase(BaseModel):
     """ブログ記事の基本スキーマ"""
+    id: int
     title: str
     intro: str
-    date: date
+    date: Optional[str] = None  # ISO format string
+    slug: str
+    first_published_at: Optional[str] = None  # ISO format string
+    body: str
 
 
 class PostSchema(PostBase):
     """ブログ記事の詳細スキーマ（API レスポンス用）"""
+    
+    class Config:
+        from_attributes = True
+
+
+class PostListItemSchema(BaseModel):
+    """ブログ記事一覧の個別アイテム用スキーマ"""
     id: int
+    title: str
+    intro: str
+    date: Optional[str] = None  # ISO format string
     slug: str
+    first_published_at: Optional[str] = None  # ISO format string
     body: str
-    url_path: str
     
     class Config:
         from_attributes = True
 
 
-class PostListSchema(PostBase):
-    """ブログ記事一覧用スキーマ（簡略版）"""
-    id: int
-    slug: str
-    url_path: str
+class PaginationSchema(BaseModel):
+    """ページネーション情報スキーマ"""
+    limit: int
+    offset: int
+    total_count: int
+    has_next: bool
+    has_prev: bool
+
+
+class MetaSchema(BaseModel):
+    """メタ情報スキーマ"""
+    execution_time: float
+    search_query: Optional[str] = None
+
+
+class PostListSchema(BaseModel):
+    """ブログ記事一覧レスポンス用スキーマ"""
+    posts: List[PostListItemSchema]
+    pagination: PaginationSchema
+    meta: MetaSchema
     
     class Config:
         from_attributes = True
+
+
+class CacheStatsSchema(BaseModel):
+    """キャッシュ統計スキーマ"""
+    hits: int
+    misses: int
+
+
+class PerformanceStatsSchema(BaseModel):
+    """パフォーマンス統計スキーマ"""
+    avg_response_time: float
+
+
+class PostStatsSchema(BaseModel):
+    """投稿統計情報スキーマ"""
+    total_posts: int
+    cache: CacheStatsSchema
+    performance: PerformanceStatsSchema
+
+
+class CacheClearSchema(BaseModel):
+    """キャッシュクリア結果スキーマ"""
+    message: str

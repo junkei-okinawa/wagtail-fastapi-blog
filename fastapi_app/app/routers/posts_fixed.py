@@ -18,7 +18,7 @@ if not settings.configured:
     django.setup()
 
 from blog.models import BlogPage
-from ..schemas.post import PostSchema, PostListSchema, PostStatsSchema, CacheClearSchema
+from ..schemas.post import PostSchema, PostListSchema
 
 # ルーターの作成
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -160,38 +160,6 @@ async def get_posts(
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/stats", response_model=PostStatsSchema)
-async def get_posts_stats():
-    """ブログ記事の統計情報を取得"""
-    try:
-        total_posts = await get_blog_pages_count()
-        
-        return {
-            "total_posts": total_posts,
-            "cache": {
-                "hits": 0,  # キャッシュ統計は簡易実装
-                "misses": 0
-            },
-            "performance": {
-                "avg_response_time": 0.1
-            }
-        }
-    except Exception as e:
-        logger.error(f"Error in get_posts_stats: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-
-@router.post("/cache/clear", response_model=CacheClearSchema)
-async def clear_cache():
-    """キャッシュをクリア"""
-    try:
-        # 実際のキャッシュクリア処理（簡易実装）
-        return {"message": "Cache cleared successfully"}
-    except Exception as e:
-        logger.error(f"Error in clear_cache: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-
 @router.get("/{post_id}", response_model=PostSchema)
 async def get_post(post_id: int):
     """特定のブログ記事を取得"""
@@ -214,4 +182,36 @@ async def get_post(post_id: int):
         raise
     except Exception as e:
         logger.error(f"Error in get_post: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/stats")
+async def get_posts_stats():
+    """ブログ記事の統計情報を取得"""
+    try:
+        total_posts = await get_blog_pages_count()
+        
+        return {
+            "total_posts": total_posts,
+            "cache": {
+                "hits": 0,  # キャッシュ統計は簡易実装
+                "misses": 0
+            },
+            "performance": {
+                "avg_response_time": 0.1
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error in get_posts_stats: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.post("/cache/clear")
+async def clear_cache():
+    """キャッシュをクリア"""
+    try:
+        # 実際のキャッシュクリア処理（簡易実装）
+        return {"message": "Cache cleared successfully"}
+    except Exception as e:
+        logger.error(f"Error in clear_cache: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")

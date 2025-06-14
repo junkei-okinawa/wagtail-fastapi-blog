@@ -18,54 +18,6 @@ if not settings.configured:
 from main_asgi import app as fastapi_app
 
 
-@pytest.fixture(scope="session") 
-def django_db_setup():
-    """Django database setup for testing."""
-    from django.core.management import call_command
-    from django.test.utils import setup_test_environment, teardown_test_environment
-    
-    # テスト環境のセットアップ（既にセットアップされている場合はスキップ）
-    try:
-        setup_test_environment()
-    except RuntimeError:
-        # 既にセットアップされている場合は無視
-        pass
-        
-    call_command('migrate', verbosity=0, interactive=False)
-    
-    # Wagtailの初期データを作成
-    try:
-        from wagtail.models import Page, Site
-        from wagtail.rich_text import RichText
-        
-        # ルートページが存在しない場合は作成
-        if not Page.objects.filter(title="Root").exists():
-            root = Page.add_root(title="Root", slug="root")
-            
-            # ホームページを作成
-            from blog.models import BlogIndexPage, BlogPage
-            
-            # サイトオブジェクトを作成
-            if not Site.objects.exists():
-                Site.objects.create(
-                    hostname='localhost',
-                    port=80,
-                    root_page=root,
-                    is_default_site=True
-                )
-    except Exception as e:
-        # テスト環境でエラーが発生した場合はスキップ
-        pass
-    
-    yield
-    
-    # クリーンアップ
-    try:
-        teardown_test_environment()
-    except RuntimeError:
-        pass
-
-
 @pytest.fixture
 def client():
     """FastAPI test client."""
@@ -105,6 +57,6 @@ def sample_blog_data():
         "article_id": 1,
         "amount": 500,
         "article_title": "Test Article Title",
-        "success_url": "https://test.com/success/",
-        "cancel_url": "https://test.com/cancel/"
+        "success_url": "http://localhost:8000/success/",
+        "cancel_url": "http://localhost:8000/cancel/"
     }
