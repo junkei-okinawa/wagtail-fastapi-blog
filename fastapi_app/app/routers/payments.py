@@ -1,18 +1,14 @@
 import os
 import stripe
-from fastapi import APIRouter, HTTPException, Request, Depends
-from typing import Dict, Any
+from fastapi import APIRouter, HTTPException, Request
 from dotenv import load_dotenv
-import hmac
-import hashlib
 import logging
+from collections import defaultdict
+import time
 
 from ..schemas.payment import (
     CheckoutSessionRequest,
-    CheckoutSessionResponse,
-    PaymentIntentRequest,
-    PaymentIntentResponse,
-    WebhookEvent
+    CheckoutSessionResponse
 )
 
 # 環境変数を読み込み
@@ -27,9 +23,6 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 router = APIRouter(prefix="/payments", tags=["payments"])
 
 # レート制限用の簡単な実装（本番では Redis 等を使用）
-from collections import defaultdict
-import time
-
 request_counts = defaultdict(list)
 
 def rate_limit_check(request: Request, max_requests: int = 10, window_seconds: int = 60):
@@ -53,10 +46,15 @@ def rate_limit_check(request: Request, max_requests: int = 10, window_seconds: i
 @router.post("/create-checkout-session", response_model=CheckoutSessionResponse)
 async def create_checkout_session(
     request_data: CheckoutSessionRequest, 
-    request: Request,
-    _: None = Depends(lambda r: rate_limit_check(r, max_requests=5, window_seconds=60))
+    request: Request
 ):
     """Stripe Checkout セッションを作成"""
+    
+    # レート制限チェック
+    try:
+        rate_limit_check(request, max_requests=5, window_seconds=60)
+    except HTTPException:
+        raise
     
     # 入力検証
     if request_data.amount <= 0 or request_data.amount > 100000:  # 0円〜10万円の範囲
