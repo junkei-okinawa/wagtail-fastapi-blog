@@ -59,13 +59,18 @@ make dev
 | `make docker-down` | コンテナ停止・削除 |
 | `make docker-clean` | イメージ・ボリューム完全削除 |
 
-### **コード品質**
-| コマンド | 説明 |
-|---------|------|
-| `make lint` | コード品質チェック (flake8, ruff) |
-| `make format` | コードフォーマット (black, isort, ruff) |
-| `make setup-hooks` | Pre-commit hooks インストール |
-| `make check-hooks` | Pre-commit hooks 手動実行 |
+### **コード品質 - 段階的品質管理**
+| コマンド | 説明 | 使用タイミング |
+|---------|------|-------------|
+| `make lint` | **完全品質チェック** (pre-commit全実行) | コミット前・PR前 |
+| `make lint-core` | **コアコード厳格チェック** (fastapi_app/, blog/) | 日常開発・機能実装時 |
+| `make lint-quick` | **高速チェック** (ruff + black基本チェック) | リアルタイム確認 |
+| `make lint-full` | **全体統合チェック** (lint + lint-e2e) | リリース前・CI/CD |
+| `make lint-e2e` | **E2Eテスト緩和チェック** (非ブロッキング警告) | E2E修正時 |
+| `make format` | **自動フォーマット** (lint経由実行) | コード整形 |
+| `make setup-hooks` | **Pre-commit hooks インストール** | 初回セットアップ |
+| `make check-hooks` | **Pre-commit hooks 手動実行** | 確認・デバッグ |
+| `make audit` | **セキュリティ監査** (pip-audit) | 定期的セキュリティチェック |
 
 ### **Django管理**
 | コマンド | 説明 |
@@ -313,3 +318,148 @@ make docker-dev
 - 🔒 **セキュリティ脆弱性**: [Security Template](../../issues/new?template=security_vulnerability.md)
 
 詳細は `CONTRIBUTING.md` と `ROADMAP.md` を参照してください。
+
+## 🔍 品質管理ガイド
+
+### **段階的品質管理アプローチ**
+
+本プロジェクトでは、開発効率と品質のバランスを取るため、段階的な品質管理を採用しています。
+
+#### **1. 日常開発** - `make lint-core`
+```bash
+# コアコード（fastapi_app/, blog/）の厳格チェック
+make lint-core
+```
+- **対象**: プロダクションコード (`fastapi_app/`, `blog/`, `main_asgi.py`, `manage.py`)
+- **ツール**: flake8, black, ruff (RUF005, RUF012等の現代的品質基準)
+- **方針**: 厳格 - 全エラーでビルド停止
+- **用途**: 機能実装時、プルリクエスト前
+
+#### **2. 高速確認** - `make lint-quick`
+```bash
+# ruff + blackの基本チェック（高速）
+make lint-quick
+```
+- **対象**: コアコード + 単体・統合テスト
+- **ツール**: ruff (自動修正付き), black
+- **方針**: 基本的な品質確保、軽量
+- **用途**: コーディング中のリアルタイム確認
+
+#### **3. 完全チェック** - `make lint`
+```bash
+# pre-commit全フック実行
+make lint
+```
+- **対象**: 全ファイル
+- **ツール**: 全品質ツール (trim whitespace, yaml check, black, isort, flake8, pytest-quick)
+- **方針**: コミット可能状態の確保
+- **用途**: コミット前、プルリクエスト前
+
+#### **4. 統合チェック** - `make lint-full`
+```bash
+# 全体品質チェック（E2E含む）
+make lint-full
+```
+- **対象**: 全ファイル + E2Eテスト
+- **ツール**: lint + lint-e2e (E2Eは警告のみ)
+- **方針**: リリース前品質保証
+- **用途**: リリース前、CI/CD最終チェック
+
+#### **5. E2E品質** - `make lint-e2e`
+```bash
+# E2Eテストの緩和チェック（非ブロッキング）
+make lint-e2e
+```
+- **対象**: `tests/e2e/`
+- **ツール**: black, flake8 (緩和されたルール)
+- **方針**: 警告のみ - ビルドを停止しない
+- **用途**: E2Eテスト修正時
+
+### **推奨開発ワークフロー**
+
+```bash
+# 1. 開発開始
+git checkout -b feature/new-feature
+
+# 2. 機能実装中（リアルタイム品質確認）
+make lint-quick     # 高速チェック
+
+# 3. 機能完成時（厳格品質確認）
+make lint-core      # コアコード厳格チェック
+make test-unit      # 単体テスト
+
+# 4. コミット前（完全品質確認）
+make lint           # 全品質チェック
+make test           # 全テスト
+
+# 5. プルリクエスト前（統合品質確認）
+make lint-full      # E2E含む全体チェック
+make test-coverage  # カバレッジ確認
+make audit          # セキュリティ監査
+
+# 6. コミット（自動品質チェック）
+git add .
+git commit -m "feat: 新機能実装"  # pre-commit自動実行
+```
+
+### **品質基準**
+
+#### **コアコード品質基準 (厳格)**
+- **RUF005**: イテラブルアンパック推奨 (`[*list1, item1]`)
+- **RUF012**: Mutableクラス属性の`typing.ClassVar`アノテーション
+- **E501/E203**: 行長・空白はblackに委任
+- **F403/F405**: Django settings等の必要な箇所で許可
+- **Import順序**: isortによる自動整理
+
+#### **E2E品質基準 (緩和)**
+- **基本フォーマット**: blackによる最低限整形
+- **import/style警告**: 非ブロッキング（警告のみ）
+- **プラグマ**: テスト特化の柔軟性を許可
+
+#### **セキュリティ基準**
+```bash
+# 依存関係脆弱性監査
+make audit
+```
+- **pip-audit**: 既知脆弱性の定期チェック
+- **定期実行**: 週次または依存関係更新時
+
+### **トラブルシューティング**
+
+#### **よくある品質エラーと解決方法**
+
+1. **RUF005 (イテラブルアンパック)**
+```python
+# ❌ 古い書き方
+content_panels = Page.content_panels + [FieldPanel("intro")]
+
+# ✅ 現代的な書き方
+content_panels = [*Page.content_panels, FieldPanel("intro")]
+```
+
+2. **RUF012 (ClassVar)**
+```python
+# ❌ 警告が出る書き方
+class MyModel(Page):
+    subpage_types = ["app.MyPage"]
+
+# ✅ 型アノテーション付き
+class MyModel(Page):
+    subpage_types: ClassVar[list[str]] = ["app.MyPage"]
+```
+
+3. **Import順序 (isort)**
+```python
+# ✅ 自動修正
+make format
+
+# または手動実行
+uv run isort fastapi_app/ blog/
+```
+
+4. **pre-commitでファイル変更された場合**
+```bash
+# 修正されたファイルを再コミット
+git add .
+git commit -m "fix: 品質修正適用"
+```

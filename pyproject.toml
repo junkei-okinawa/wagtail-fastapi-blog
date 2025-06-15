@@ -122,6 +122,19 @@ skip_glob = ["*/migrations/*"]
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "migrations",
+    "node_modules",
+    "staticfiles",
+    "tests/e2e/",  # E2E tests excluded from strict formatting
+]
+
+[tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "DJ", "SIM", "RUF"]
 ignore = [
     "E501",  # line too long (handled by black)
@@ -143,19 +156,8 @@ ignore = [
     "UP035",  # deprecated typing imports
     "RUF013", # implicit Optional
 ]
-exclude = [
-    ".git",
-    ".mypy_cache",
-    ".ruff_cache",
-    ".venv",
-    "__pycache__",
-    "migrations",
-    "node_modules",
-    "staticfiles",
-    "tests/e2e/",  # E2E tests excluded from strict formatting
-]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D"]
 "*/migrations/*" = ["ALL"]
 "main_asgi.py" = ["E402"]  # Django setup needs to be before imports

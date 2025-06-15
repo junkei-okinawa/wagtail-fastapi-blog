@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.db import models
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField
@@ -8,9 +10,9 @@ from wagtail.search import index
 class BlogIndexPage(Page):
     intro = RichTextField(blank=True)
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels: ClassVar[list] = [*Page.content_panels, FieldPanel("intro")]
 
-    subpage_types = ["blog.BlogPage"]
+    subpage_types: ClassVar[list[str]] = ["blog.BlogPage"]
 
     def get_context(self, request):
         """パフォーマンス最適化: 子ページを効率的に取得"""
@@ -35,22 +37,24 @@ class BlogPage(Page):
     intro = models.CharField(max_length=250, db_index=True)  # インデックス追加
     body = RichTextField(blank=True)
 
-    search_fields = Page.search_fields + [
+    search_fields: ClassVar[list] = [
+        *Page.search_fields,
         index.SearchField("intro"),
         index.SearchField("body"),
     ]
 
-    content_panels = Page.content_panels + [
+    content_panels: ClassVar[list] = [
+        *Page.content_panels,
         FieldPanel("date"),
         FieldPanel("intro"),
         FieldPanel("body"),
     ]
 
-    parent_page_types = ["blog.BlogIndexPage"]
+    parent_page_types: ClassVar[list[str]] = ["blog.BlogIndexPage"]
 
     class Meta:
         # データベースレベルでのソート最適化
-        indexes = [
+        indexes: ClassVar[list] = [
             models.Index(fields=["-date"]),
             models.Index(fields=["intro", "date"]),
         ]
