@@ -129,7 +129,7 @@ test-ci: install-test
 
 # Security audit
 audit:
-	uv run safety check
+	uv run pip-audit
 
 # Docker commands
 docker-build:
