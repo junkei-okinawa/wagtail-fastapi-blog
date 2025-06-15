@@ -1,12 +1,13 @@
-version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ..:/app
       - django_media:/app/django_project/media
       - django_staticfiles:/app/django_project/staticfiles
       - django_logs:/app/django_project/logs

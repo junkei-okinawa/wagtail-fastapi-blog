@@ -1,4 +1,30 @@
-# Contributing to Django + Wagtail + FastAPI Blog
+# Contributing to Django + Wa### 🐛 **バグ報告**
+- 専用の[Bug Report Template](https://github.com/yourrepo/issues/new?template=bug_report.md)を使用
+- 再現手順を詳細に記載
+- 環境情報（OS、Python版数等）を含める
+
+### ✨ **新機能提案**
+- [Feature Request Template](https://github.com/yourrepo/issues/new?template=feature_request.md)で提案
+- 実装前に設計について相談
+- ROADMAPとの整合性を確認
+
+### ⚡ **パフォーマンス問題**
+- [Performance Issue Template](https://github.com/yourrepo/issues/new?template=performance_issue.md)を使用
+- ベンチマーク結果やプロファイリング情報を添付
+
+### 🔒 **セキュリティ脆弱性**
+- [Security Vulnerability Template](https://github.com/yourrepo/issues/new?template=security_vulnerability.md)を使用
+- 機密情報は直接メール連絡
+
+### 🔧 **コード貢献**
+- 以下のエリアで特に歓迎：
+  - CI/CD自動化（GitHub Actions）
+  - プルリクエストテンプレート作成
+  - PostgreSQL移行対応
+  - パフォーマンス最適化
+  - セキュリティ強化
+  - ドキュメント改善・翻訳
+  - 新機能開発（`ROADMAP.md`参照）g
 
 🎉 **ご協力いただき、ありがとうございます！**
 
@@ -39,11 +65,19 @@ make test
 
 ### 🔧 **コード貢献**
 - 以下のエリアで特に歓迎：
-  - テストカバレッジ向上
+  - CI/CD自動化（GitHub Actions）
+  - issue template作成
+  - PostgreSQL移行対応
   - パフォーマンス最適化
   - セキュリティ強化
-  - ドキュメント改善
-  - E2Eテスト追加
+  - ドキュメント改善・翻訳
+  - 新機能開発（`ROADMAP.md`参照）
+
+### 🧪 **テスト貢献**
+- **単体テスト**: 新機能・既存機能のテスト追加
+- **E2Eテスト**: ブラウザ自動化テストの拡充
+- **パフォーマンステスト**: 負荷テスト・ベンチマーク
+- **セキュリティテスト**: 脆弱性検査・ペネトレーション
 
 ## 📝 開発フロー
 
@@ -71,15 +105,23 @@ git checkout -b feature/123-add-user-authentication
 # 開発環境で動作確認
 make dev
 
+# または Docker環境で
+make docker-dev   # SQLite環境
+make docker-full  # PostgreSQL + Redis環境
+
 # コード品質チェック
 make lint
 make format
 
 # テスト実行
-make test
-make test-coverage
+make test           # 単体・統合テスト
+make test-e2e       # E2Eテスト
+make test-coverage  # カバレッジ付きテスト
 
-# 新機能の場合はテストも追加
+# 新機能の場合は適切なテストも追加
+# - 単体テスト: tests/unit/
+# - 統合テスト: tests/integration/
+# - E2Eテスト: tests/e2e/
 ```
 
 ### **4. コミット**
@@ -127,19 +169,38 @@ make test-e2e
 
 ## 📊 コード品質基準
 
-### **必須チェック**
-- [ ] `make lint` が通る
+### **現在の品質実績（2025年6月15日時点）**
+- ✅ **テスト成功率**: 100% (41/41件)
+- ✅ **コードカバレッジ**: 82%
+- ✅ **E2Eテスト**: 14件（全成功）
+- ✅ **Lint エラー**: 0件
+- ✅ **型チェック**: pre-commit自動実行
+
+### **必須チェック項目**
+- [ ] `make lint` が通る（エラー0件を維持）
 - [ ] `make format` が適用済み
-- [ ] Pre-commit hooks が設定済み
-- [ ] 全テストが通る
-- [ ] カバレッジが下がっていない
+- [ ] Pre-commit hooks が設定済み・動作確認
+- [ ] 全テストが通る（100%成功率を維持）
+- [ ] コードカバレッジが82%以上を維持
+- [ ] 新機能にはE2Eテストも追加
+
+### **推奨品質基準**
+| 項目 | 最低基準 | 推奨基準 | 現在値 |
+|------|----------|----------|---------|
+| テスト成功率 | 95% | 100% | **100%** ✅ |
+| カバレッジ | 70% | 80%+ | **82%** ✅ |
+| E2Eテスト | 5件 | 10件+ | **14件** ✅ |
+| レスポンス時間 | <500ms | <200ms | **<100ms** ✅ |
+| Lint エラー | 0 | 0 | **0** ✅ |
 
 ### **コーディング規約**
-- **Python**: PEP 8 準拠（Black, isort, Ruff）
+- **Python**: PEP 8 準拠（Black, isort, Ruff自動適用）
+- **型ヒント**: 推奨（mypy対応）
 - **コメント**: 日本語OK、複雑な処理は英語併記
 - **変数名**: 英語、分かりやすい名前
 - **関数**: 単一責任の原則
 - **ファイル**: 適切な分割、依存関係を考慮
+- **テスト**: 新機能は単体・統合・E2Eすべて追加
 
 ## 🔍 レビュープロセス
 

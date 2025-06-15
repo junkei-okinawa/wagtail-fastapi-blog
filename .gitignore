@@ -137,7 +137,7 @@ $RECYCLE.BIN/
 *~
 
 # ===========================
-# テスト・カバレッジ
+# テスト・カバレッジ・リンター
 # ===========================
 .coverage
 .pytest_cache/
@@ -148,6 +148,11 @@ coverage.xml
 *.py,cover
 .hypothesis/
 htmlcov/
+
+# Linter・フォーマッター
+.ruff_cache/
+.mypy_cache/
+.pylint.d/
 .cache
 nosetests.xml
 

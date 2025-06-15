@@ -149,8 +149,8 @@ tests/
 - `POST /webhook` - Stripe Webhook処理
 
 ### 管理画面
-- `/admin/` - Django管理画面
-- `/cms/` - Wagtail CMS管理画面
+- `/admin/` - Wagtail CMS管理画面（コンテンツ管理）
+- `/django-admin/` - Django管理画面（システム管理）
 
 ## 🏗️ アーキテクチャ
 
@@ -370,7 +370,14 @@ MIT License
 
 ## 📞 サポート
 
-質問やサポートが必要な場合は、Issueを作成してください。
+プロジェクトに関する質問やサポートが必要な場合は、適切なissue templateを使用してください：
+
+- 🐛 **バグ報告**: [Bug Report Template](../../issues/new?template=bug_report.md)
+- ✨ **新機能提案**: [Feature Request Template](../../issues/new?template=feature_request.md)  
+- ⚡ **パフォーマンス問題**: [Performance Issue Template](../../issues/new?template=performance_issue.md)
+- 🔒 **セキュリティ脆弱性**: [Security Template](../../issues/new?template=security_vulnerability.md)
+
+詳細な貢献ガイドは[CONTRIBUTING.md](CONTRIBUTING.md)をご覧ください。
 
 ---
 

@@ -136,10 +136,10 @@ docker-build:
 	docker build -f docker/Dockerfile -t my-wagtail-fastapi-blog .
 
 docker-dev:
-	docker-compose -f docker/docker-compose.dev.yml up --build
+	docker-compose -f docker/docker-compose.dev.yml up --build -d
 
 docker-full:
-	docker-compose -f docker/docker-compose.yml up --build
+	docker-compose -f docker/docker-compose.yml up --build -d
 
 docker-down:
 	docker-compose -f docker/docker-compose.yml down

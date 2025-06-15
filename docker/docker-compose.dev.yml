@@ -1,13 +1,14 @@
 # Simple Docker Compose for development (SQLite)
-version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ..:/app
     environment:
       - DEBUG=1
       - DJANGO_SETTINGS_MODULE=django_project.totonoe_template.settings.dev
