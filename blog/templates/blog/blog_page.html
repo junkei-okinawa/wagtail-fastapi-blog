@@ -8,25 +8,25 @@
     <div class="col-lg-8">
         <article>
             <h1>{{ page.title }}</h1>
-            
+
             {% if page.date %}
                 <p class="text-muted mb-3">
                     <small>投稿日: {{ page.date }}</small>
                 </p>
             {% endif %}
-            
+
             {% if page.intro %}
                 <div class="lead mb-4">
                     {{ page.intro }}
                 </div>
             {% endif %}
-            
+
             {% if page.body %}
                 <div class="content">
                     {{ page.body|richtext }}
                 </div>
             {% endif %}
-            
+
             <!-- 決済ボタン（フェーズ3用） -->
             <div class="mt-5 p-4 bg-light rounded">
                 <h4>この記事を購入</h4>
@@ -43,7 +43,7 @@
             </div>
         </article>
     </div>
-    
+
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
@@ -54,7 +54,7 @@
                 <p class="text-muted">関連記事がここに表示されます。</p>
             </div>
         </div>
-        
+
         <div class="card mt-3">
             <div class="card-header">
                 <h5 class="mb-0">ナビゲーション</h5>
@@ -73,17 +73,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     const purchaseBtn = document.getElementById('purchase-btn');
     const loading = document.getElementById('loading');
-    
+
     if (purchaseBtn) {
         purchaseBtn.addEventListener('click', async function() {
             const articleId = this.dataset.articleId;
             const articleTitle = this.dataset.articleTitle;
-            
+
             // ボタンを無効化してローディング表示
             purchaseBtn.disabled = true;
             purchaseBtn.classList.add('d-none');
             loading.classList.remove('d-none');
-            
+
             try {
                 // Stripe Checkout セッションを作成
                 const response = await fetch('/api/payments/create-checkout-session', {
@@ -99,20 +99,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         cancel_url: window.location.origin + '/cancel/'
                     })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+
                 const data = await response.json();
-                
+
                 // Stripe Checkout ページにリダイレクト
                 window.location.href = data.checkout_url;
-                
+
             } catch (error) {
                 console.error('決済エラー:', error);
                 alert('決済の準備中にエラーが発生しました。もう一度お試しください。');
-                
+
                 // ボタンを元に戻す
                 purchaseBtn.disabled = false;
                 purchaseBtn.classList.remove('d-none');

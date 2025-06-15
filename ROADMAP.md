@@ -50,7 +50,7 @@
 - [ ] GitHub Actions CI/CD完全自動化
 - [x] issue template作成
   - [x] Bug report template
-  - [x] Feature request template  
+  - [x] Feature request template
   - [x] Performance issue template
   - [x] Security vulnerability template
 - [ ] プルリクエストテンプレート

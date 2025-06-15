@@ -14,22 +14,22 @@
                 <p class="card-text lead">
                     ご購入ありがとうございます。記事へのアクセスが有効になりました。
                 </p>
-                
+
                 <div class="alert alert-info">
                     <h5>セッション情報</h5>
                     <p class="mb-0">
-                        <strong>セッションID:</strong> 
+                        <strong>セッションID:</strong>
                         <span id="session-id">{{ request.GET.session_id|default:"不明" }}</span>
                     </p>
                 </div>
-                
+
                 <div class="mt-4">
                     <a href="/" class="btn btn-primary me-2">ホームに戻る</a>
                     <a href="/sample-index-page/" class="btn btn-outline-secondary">ブログ一覧</a>
                 </div>
-                
+
                 <hr class="my-4">
-                
+
                 <div class="text-muted">
                     <h6>次のステップ</h6>
                     <ul class="list-unstyled">
@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // URL パラメータからセッションIDを取得
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
-    
+
     if (sessionId) {
         document.getElementById('session-id').textContent = sessionId;
-        
+
         // TODO: セッションIDを使って購入詳細を取得・表示
         // TODO: 購入完了の処理をバックエンドに通知
     }

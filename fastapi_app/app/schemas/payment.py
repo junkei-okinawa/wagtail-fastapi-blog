@@ -41,7 +41,7 @@ class WebhookEvent(BaseModel):
     """Stripe Webhook イベント"""
 
     event_type: str
-    payment_intent_id: Optional[str] = None
-    session_id: Optional[str] = None
+    payment_intent_id: str | None = None
+    session_id: str | None = None
     status: str
-    amount: Optional[int] = None
+    amount: int | None = None

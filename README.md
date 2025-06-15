@@ -245,7 +245,7 @@ my-wagtail-fastapi-blog/
 
 ### 設定管理
 - **開発環境**: `django_project/totonoe_template/settings/dev.py`
-- **本番環境**: `django_project/totonoe_template/settings/prod.py`  
+- **本番環境**: `django_project/totonoe_template/settings/prod.py`
 - **テスト環境**: `django_project/totonoe_template/settings/test.py`
 - **E2E環境**: `django_project/totonoe_template/settings/e2e.py`（分離DB）
 - **共通設定**: `django_project/totonoe_template/settings/base.py`
@@ -373,7 +373,7 @@ MIT License
 プロジェクトに関する質問やサポートが必要な場合は、適切なissue templateを使用してください：
 
 - 🐛 **バグ報告**: [Bug Report Template](../../issues/new?template=bug_report.md)
-- ✨ **新機能提案**: [Feature Request Template](../../issues/new?template=feature_request.md)  
+- ✨ **新機能提案**: [Feature Request Template](../../issues/new?template=feature_request.md)
 - ⚡ **パフォーマンス問題**: [Performance Issue Template](../../issues/new?template=performance_issue.md)
 - 🔒 **セキュリティ脆弱性**: [Security Template](../../issues/new?template=security_vulnerability.md)
 

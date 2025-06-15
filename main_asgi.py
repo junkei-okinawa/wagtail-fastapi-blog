@@ -1,17 +1,22 @@
 import os
-import django
 from pathlib import Path
+
+import django
 from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 # Django 設定を先に初期化
 # テスト環境の場合はデフォルトでtest設定を使用
-if 'DJANGO_SETTINGS_MODULE' not in os.environ:
-    if 'pytest' in os.environ.get('_', '') or 'PYTEST_CURRENT_TEST' in os.environ:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.test")
+if "DJANGO_SETTINGS_MODULE" not in os.environ:
+    if "pytest" in os.environ.get("_", "") or "PYTEST_CURRENT_TEST" in os.environ:
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.test"
+        )
     else:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.dev")
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.dev"
+        )
 
 django.setup()
 
@@ -19,13 +24,13 @@ django.setup()
 django_asgi_app = get_asgi_application()
 
 # FastAPI アプリケーションをインポート（Django 設定初期化後）
-from fastapi_app.app.main import app as fastapi_app
+from fastapi_app.app.main import app as fastapi_app  # noqa: E402
 
 # メイン ASGI アプリケーションの作成
 app = FastAPI(
     title="totonoe_template Main App",
     description="Django (Wagtail) + FastAPI 統合アプリケーション",
-    version="0.1.0"
+    version="0.1.0",
 )
 
 # FastAPI ルーターを /api パスにマウント
@@ -34,7 +39,7 @@ app.mount("/api", fastapi_app)
 # 開発時の静的ファイル配信（本番では Nginx などで処理）
 BASE_DIR = Path(__file__).resolve().parent
 # 静的ファイル用のディレクトリパス
-static_dir = BASE_DIR / "django_project" / "static"  # 開発時の静的ファイル
+static_dir = BASE_DIR / "django_project" / "static"  # 開発時
 staticfiles_dir = BASE_DIR / "django_project" / "staticfiles"  # collectstaticで収集されたファイル
 media_dir = BASE_DIR / "django_project" / "media"
 

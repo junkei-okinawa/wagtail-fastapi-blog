@@ -61,7 +61,7 @@ async def debug_posts():
 
         return {"status": "ok", "sync_count": sync_count, "async_count": async_count}
     except Exception as e:
-        logger.error(f"Debug error: {str(e)}")
+        logger.error(f"Debug error: {e!s}")
         return {"error": str(e)}
 
 
@@ -82,7 +82,7 @@ async def health_check():
             "timestamp": time.time(),
         }
     except Exception as e:
-        logger.error(f"Health check error: {str(e)}")
+        logger.error(f"Health check error: {e!s}")
         return {"status": "unhealthy", "error": str(e)}
 
 
@@ -173,7 +173,7 @@ async def get_posts(
             "meta": {"execution_time": execution_time, "search_query": search},
         }
     except Exception as e:
-        logger.error(f"Error in get_posts: {str(e)}")
+        logger.error(f"Error in get_posts: {e!s}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -189,7 +189,7 @@ async def get_posts_stats():
             "performance": {"avg_response_time": 0.1},
         }
     except Exception as e:
-        logger.error(f"Error in get_posts_stats: {str(e)}")
+        logger.error(f"Error in get_posts_stats: {e!s}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -200,7 +200,7 @@ async def clear_cache():
         # 実際のキャッシュクリア処理（簡易実装）
         return {"message": "Cache cleared successfully"}
     except Exception as e:
-        logger.error(f"Error in clear_cache: {str(e)}")
+        logger.error(f"Error in clear_cache: {e!s}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -227,5 +227,5 @@ async def get_post(post_id: int):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error in get_post: {str(e)}")
+        logger.error(f"Error in get_post: {e!s}")
         raise HTTPException(status_code=500, detail="Internal server error")

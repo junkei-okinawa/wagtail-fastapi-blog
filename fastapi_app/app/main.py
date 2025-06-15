@@ -21,7 +21,7 @@ app = FastAPI(
 )
 
 # セキュリティミドルウェア: 信頼できるホストのみ許可（テスト環境以外）
-if not os.getenv("TESTING", "False").lower() == "true":
+if os.getenv("TESTING", "False").lower() != "true":
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=[
@@ -58,7 +58,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     # 本番環境では詳細なエラーメッセージを隠す
     if os.getenv("DEBUG", "False").lower() == "true":
         return JSONResponse(
-            status_code=500, content={"detail": f"Internal server error: {str(exc)}"}
+            status_code=500, content={"detail": f"Internal server error: {exc!s}"}
         )
     else:
         return JSONResponse(

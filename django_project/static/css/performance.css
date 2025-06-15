@@ -91,7 +91,7 @@ html {
     .card {
         margin-bottom: 1rem;
     }
-    
+
     .performance-badge {
         display: none; /* モバイルでは非表示 */
     }
@@ -138,7 +138,7 @@ img {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-    
+
     html {
         scroll-behavior: auto;
     }
@@ -149,7 +149,7 @@ img {
     .card {
         border: 2px solid;
     }
-    
+
     .btn {
         border: 2px solid;
     }

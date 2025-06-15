@@ -116,16 +116,17 @@ async def create_checkout_session(
         )
 
         logger.info(
-            f"Checkout session created: {session.id} for article {request_data.article_id}"
+            f"Checkout session created: {session.id} "
+            f"for article {request_data.article_id}"
         )
 
         return CheckoutSessionResponse(session_id=session.id, checkout_url=session.url)
 
     except stripe.error.StripeError as e:
-        logger.error(f"Stripe error: {str(e)}")
+        logger.error(f"Stripe error: {e!s}")
         raise HTTPException(status_code=400, detail="Payment processing error")
     except Exception as e:
-        logger.error(f"Internal error in create_checkout_session: {str(e)}")
+        logger.error(f"Internal error in create_checkout_session: {e!s}")
         raise HTTPException(status_code=500, detail="Internal error")
 
 
@@ -145,10 +146,10 @@ async def stripe_webhook(request: Request):
         try:
             event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
         except ValueError as e:
-            logger.warning(f"Invalid payload: {str(e)}")
+            logger.warning(f"Invalid payload: {e!s}")
             raise HTTPException(status_code=400, detail="Invalid payload")
         except stripe.error.SignatureVerificationError as e:
-            logger.warning(f"Invalid signature: {str(e)}")
+            logger.warning(f"Invalid signature: {e!s}")
             raise HTTPException(status_code=400, detail="Invalid signature")
 
         # イベントタイプに応じて処理
@@ -176,7 +177,7 @@ async def stripe_webhook(request: Request):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Webhook エラー: {str(e)}")
+        logger.error(f"Webhook エラー: {e!s}")
         raise HTTPException(status_code=500, detail="Webhook processing error")
 
 
@@ -198,5 +199,5 @@ async def test_stripe_connection():
     except stripe.error.AuthenticationError:
         raise HTTPException(status_code=401, detail="Invalid Stripe API key")
     except Exception as e:
-        logger.error(f"Stripe connection error: {str(e)}")
+        logger.error(f"Stripe connection error: {e!s}")
         raise HTTPException(status_code=500, detail="Stripe connection error")

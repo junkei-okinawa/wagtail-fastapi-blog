@@ -308,7 +308,7 @@ make docker-dev
 開発中に問題が発生した場合や改善提案がある場合は、適切なissue templateを使用してください：
 
 - 🐛 **バグ報告**: [Bug Report Template](../../issues/new?template=bug_report.md)
-- ✨ **新機能提案**: [Feature Request Template](../../issues/new?template=feature_request.md)  
+- ✨ **新機能提案**: [Feature Request Template](../../issues/new?template=feature_request.md)
 - ⚡ **パフォーマンス問題**: [Performance Issue Template](../../issues/new?template=performance_issue.md)
 - 🔒 **セキュリティ脆弱性**: [Security Template](../../issues/new?template=security_vulnerability.md)
 

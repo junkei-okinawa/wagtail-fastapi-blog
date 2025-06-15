@@ -82,7 +82,10 @@ def dev_server():
     env["DEBUG"] = "true"  # FastAPI側でのデバッグモード
     env["E2E_TESTING"] = "true"  # E2E環境フラグ
     # CORS設定をより明示的に
-    cors_origins = f"http://localhost:8001,http://127.0.0.1:8001,{server_url},http://localhost:3000"
+    cors_origins = (
+        f"http://localhost:8001,http://127.0.0.1:8001,"
+        f"{server_url},http://localhost:3000"
+    )
     env["CORS_ALLOWED_ORIGINS"] = cors_origins
     print(f"Setting CORS_ALLOWED_ORIGINS: {cors_origins}")
 

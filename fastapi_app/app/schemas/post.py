@@ -9,9 +9,9 @@ class PostBase(BaseModel):
     id: int
     title: str
     intro: str
-    date: Optional[str] = None  # ISO format string
+    date: str | None = None  # ISO format string
     slug: str
-    first_published_at: Optional[str] = None  # ISO format string
+    first_published_at: str | None = None  # ISO format string
     body: str
 
 
@@ -27,9 +27,9 @@ class PostListItemSchema(BaseModel):
     id: int
     title: str
     intro: str
-    date: Optional[str] = None  # ISO format string
+    date: str | None = None  # ISO format string
     slug: str
-    first_published_at: Optional[str] = None  # ISO format string
+    first_published_at: str | None = None  # ISO format string
     body: str
 
     model_config = ConfigDict(from_attributes=True)
@@ -49,13 +49,13 @@ class MetaSchema(BaseModel):
     """メタ情報スキーマ"""
 
     execution_time: float
-    search_query: Optional[str] = None
+    search_query: str | None = None
 
 
 class PostListSchema(BaseModel):
     """ブログ記事一覧レスポンス用スキーマ"""
 
-    posts: List[PostListItemSchema]
+    posts: list[PostListItemSchema]
     pagination: PaginationSchema
     meta: MetaSchema
 

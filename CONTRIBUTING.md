@@ -94,7 +94,7 @@ git checkout -b feature/123-add-user-authentication
 
 # 命名規則:
 # feature/xxx - 新機能
-# fix/xxx - バグ修正  
+# fix/xxx - バグ修正
 # docs/xxx - ドキュメント
 # test/xxx - テスト追加
 # refactor/xxx - リファクタリング
@@ -147,7 +147,7 @@ Fixes #123"
 
 ### **新機能の場合**
 - [ ] 単体テスト追加
-- [ ] 統合テスト追加  
+- [ ] 統合テスト追加
 - [ ] E2Eテスト追加（必要に応じて）
 - [ ] カバレッジ低下なし
 

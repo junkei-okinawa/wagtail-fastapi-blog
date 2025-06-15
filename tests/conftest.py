@@ -18,7 +18,7 @@ os.environ.setdefault(
 if not settings.configured:
     django.setup()
 
-from main_asgi import app as fastapi_app  # noqa: E402
+from main_asgi import app as fastapi_app
 
 
 @pytest.fixture

@@ -4,8 +4,9 @@ FastAPI アプリケーションのパフォーマンス最適化ユーティリ
 
 import logging
 import time
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +162,7 @@ class PerformanceMonitor:
             except Exception as e:
                 execution_time = time.time() - start_time
                 logger.error(
-                    f"{func.__name__} failed after {execution_time:.3f} seconds: {str(e)}"
+                    f"{func.__name__} failed after {execution_time:.3f} seconds: {e!s}"
                 )
                 raise
 

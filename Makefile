@@ -53,15 +53,17 @@ test-e2e:
 # All tests including E2E
 test-all: test test-e2e
 
-# Code quality and formatting
+# Code quality - unified through pre-commit
 lint:
-	uv run flake8 --max-line-length=88 --extend-ignore=E203,W503,E501 fastapi_app/ blog/ tests/
-	uv run ruff check fastapi_app/ blog/ tests/
+	uv run pre-commit run --all-files
 
-format:
-	uv run isort fastapi_app/ blog/ tests/
-	uv run black fastapi_app/ blog/ tests/
-	uv run ruff format fastapi_app/ blog/ tests/
+format: lint
+	@echo "Formatting completed via pre-commit hooks"
+
+# Quick lint check (for CI/rapid feedback)
+lint-quick:
+	uv run ruff check fastapi_app/ blog/ tests/ --fix
+	uv run black --check fastapi_app/ blog/ tests/
 
 # Pre-commit setup
 setup-hooks:
@@ -113,8 +115,8 @@ check:
 # Create test data
 create-test-data:
 	uv run python manage.py shell -c "
-	from wagtail.models import Page, Site; 
-	from blog.models import BlogPage; 
+	from wagtail.models import Page, Site;
+	from blog.models import BlogPage;
 	from wagtail.rich_text import RichText;
 	root = Page.objects.get(title='Root');
 	for i in range(5):
