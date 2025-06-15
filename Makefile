@@ -24,9 +24,9 @@ install:
 install-test:
 	uv sync --group test
 
-# Run all tests
+# Run all tests (excluding E2E)
 test: install-test
-	uv run pytest
+	uv run pytest tests/unit/ tests/integration/ -v
 
 # Run unit tests only
 test-unit: install-test
@@ -36,23 +36,40 @@ test-unit: install-test
 test-integration: install-test
 	uv run pytest tests/integration/ -m integration -v
 
-# Run tests with coverage
+# Run tests with coverage (excluding E2E)
 test-coverage: install-test
-	uv run pytest --cov=fastapi_app --cov=blog --cov-report=term-missing --cov-report=html
+	uv run pytest tests/unit/ tests/integration/ --cov=fastapi_app --cov=blog --cov-report=term-missing --cov-report=html
 
-# Run quick tests (excluding slow tests)
+# Run quick tests (excluding slow tests and E2E)
 test-quick: install-test
-	uv run pytest -m "not slow" -v
+	uv run pytest tests/unit/ tests/integration/ -m "not slow" -v
 
-# Lint code
+# E2E tests
+test-e2e:
+	uv sync --group e2e
+	uv run playwright install
+	uv run --group e2e pytest tests/e2e/ -v --tb=short --disable-warnings -o addopts="" --asyncio-mode=auto
+
+# All tests including E2E
+test-all: test test-e2e
+
+# Code quality and formatting
 lint:
-	uv run ruff check .
-	uv run flake8 fastapi_app blog tests
+	uv run flake8 --max-line-length=88 --extend-ignore=E203,W503,E501 fastapi_app/ blog/ tests/
+	uv run ruff check fastapi_app/ blog/ tests/
 
-# Format code
 format:
-	uv run ruff format .
-	uv run isort fastapi_app blog tests
+	uv run isort fastapi_app/ blog/ tests/
+	uv run black fastapi_app/ blog/ tests/
+	uv run ruff format fastapi_app/ blog/ tests/
+
+# Pre-commit setup
+setup-hooks:
+	uv run pre-commit install
+	@echo "Pre-commit hooks installed successfully!"
+
+check-hooks:
+	uv run pre-commit run --all-files
 
 # Clean up generated files
 clean:
@@ -113,3 +130,20 @@ test-ci: install-test
 # Security audit
 audit:
 	uv run safety check
+
+# Docker commands
+docker-build:
+	docker build -f docker/Dockerfile -t my-wagtail-fastapi-blog .
+
+docker-dev:
+	docker-compose -f docker/docker-compose.dev.yml up --build
+
+docker-full:
+	docker-compose -f docker/docker-compose.yml up --build
+
+docker-down:
+	docker-compose -f docker/docker-compose.yml down
+
+docker-clean:
+	docker-compose -f docker/docker-compose.yml down -v
+	docker system prune -f

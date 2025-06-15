@@ -56,6 +56,7 @@ db.sqlite3*
 *.log
 /logs/
 /django_project/logs/
+e2e_server.log
 
 # Django設定ファイル (ローカル設定)
 local_settings.py

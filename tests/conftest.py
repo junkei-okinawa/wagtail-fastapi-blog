@@ -1,21 +1,24 @@
 """Test configuration and fixtures."""
 
 import os
+
+import django
 import pytest
 from django.conf import settings
 from django.test import override_settings
-from httpx import AsyncClient
-import django
 from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 # Django設定の初期化
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.test")
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", "django_project.totonoe_template.settings.test"
+)
 
 # テスト用のDjango設定オーバーライド
 if not settings.configured:
     django.setup()
 
-from main_asgi import app as fastapi_app
+from main_asgi import app as fastapi_app  # noqa: E402
 
 
 @pytest.fixture
@@ -23,14 +26,14 @@ def client():
     """FastAPI test client."""
     with override_settings(
         DEBUG=True,
-        ALLOWED_HOSTS=['*'],  # テスト環境では全てのホストを許可
+        ALLOWED_HOSTS=["*"],  # テスト環境では全てのホストを許可
         USE_TZ=False,
         DATABASES={
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': ':memory:',
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": ":memory:",
             }
-        }
+        },
     ):
         return TestClient(fastapi_app)
 
@@ -58,5 +61,5 @@ def sample_blog_data():
         "amount": 500,
         "article_title": "Test Article Title",
         "success_url": "http://localhost:8000/success/",
-        "cancel_url": "http://localhost:8000/cancel/"
+        "cancel_url": "http://localhost:8000/cancel/",
     }

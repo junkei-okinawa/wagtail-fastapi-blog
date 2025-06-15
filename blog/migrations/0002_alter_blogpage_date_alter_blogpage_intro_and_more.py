@@ -4,29 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0001_initial'),
-        ('wagtailcore', '0094_alter_page_locale'),
+        ("blog", "0001_initial"),
+        ("wagtailcore", "0094_alter_page_locale"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='blogpage',
-            name='date',
-            field=models.DateField(db_index=True, verbose_name='Post date'),
+            model_name="blogpage",
+            name="date",
+            field=models.DateField(db_index=True, verbose_name="Post date"),
         ),
         migrations.AlterField(
-            model_name='blogpage',
-            name='intro',
+            model_name="blogpage",
+            name="intro",
             field=models.CharField(db_index=True, max_length=250),
         ),
         migrations.AddIndex(
-            model_name='blogpage',
-            index=models.Index(fields=['-date'], name='blog_blogpa_date_7f56a0_idx'),
+            model_name="blogpage",
+            index=models.Index(fields=["-date"], name="blog_blogpa_date_7f56a0_idx"),
         ),
         migrations.AddIndex(
-            model_name='blogpage',
-            index=models.Index(fields=['intro', 'date'], name='blog_blogpa_intro_6ebfec_idx'),
+            model_name="blogpage",
+            index=models.Index(
+                fields=["intro", "date"], name="blog_blogpa_intro_6ebfec_idx"
+            ),
         ),
     ]

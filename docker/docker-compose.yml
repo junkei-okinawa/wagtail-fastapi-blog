@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - django_media:/app/django_project/media
+      - django_staticfiles:/app/django_project/staticfiles
+      - django_logs:/app/django_project/logs
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=django_project.totonoe_template.settings.dev
+    depends_on:
+      - db
+      - redis
+    command: >
+      sh -c "uv run python manage.py migrate &&
+             uv run python manage.py collectstatic --noinput &&
+             uv run uvicorn main_asgi:app --host 0.0.0.0 --port 8000 --reload"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: blog_db
+      POSTGRES_USER: blog_user
+      POSTGRES_PASSWORD: blog_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    profiles:
+      - admin
+
+volumes:
+  postgres_data:
+  redis_data:
+  django_media:
+  django_staticfiles:
+  django_logs:

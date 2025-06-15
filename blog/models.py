@@ -1,30 +1,32 @@
 from django.db import models
-
-from wagtail.models import Page
-from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel
+from wagtail.fields import RichTextField
+from wagtail.models import Page
 from wagtail.search import index
 
 
 class BlogIndexPage(Page):
     intro = RichTextField(blank=True)
 
-    content_panels = Page.content_panels + [
-        FieldPanel('intro')
-    ]
+    content_panels = Page.content_panels + [FieldPanel("intro")]
 
-    subpage_types = ['blog.BlogPage']
-    
+    subpage_types = ["blog.BlogPage"]
+
     def get_context(self, request):
         """パフォーマンス最適化: 子ページを効率的に取得"""
         context = super().get_context(request)
-        
+
         # select_related/prefetch_related でクエリ数を削減
-        blog_pages = self.get_children().live().public().specific().select_related(
-            'content_type'
-        ).order_by('-first_published_at')[:10]  # 最新10件のみ
-        
-        context['blog_pages'] = blog_pages
+        blog_pages = (
+            self.get_children()
+            .live()
+            .public()
+            .specific()
+            .select_related("content_type")
+            .order_by("-first_published_at")[:10]
+        )  # 最新10件のみ
+
+        context["blog_pages"] = blog_pages
         return context
 
 
@@ -34,21 +36,21 @@ class BlogPage(Page):
     body = RichTextField(blank=True)
 
     search_fields = Page.search_fields + [
-        index.SearchField('intro'),
-        index.SearchField('body'),
+        index.SearchField("intro"),
+        index.SearchField("body"),
     ]
 
     content_panels = Page.content_panels + [
-        FieldPanel('date'),
-        FieldPanel('intro'),
-        FieldPanel('body'),
+        FieldPanel("date"),
+        FieldPanel("intro"),
+        FieldPanel("body"),
     ]
 
-    parent_page_types = ['blog.BlogIndexPage']
-    
+    parent_page_types = ["blog.BlogIndexPage"]
+
     class Meta:
         # データベースレベルでのソート最適化
         indexes = [
-            models.Index(fields=['-date']),
-            models.Index(fields=['intro', 'date']),
+            models.Index(fields=["-date"]),
+            models.Index(fields=["intro", "date"]),
         ]
